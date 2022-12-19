@@ -12,7 +12,7 @@
 
 module purge
 source ~/miniconda3/etc/profile.d/conda.sh
-#conda activate meryl
+#conda package was for and old version - had to do a manual install of version 1.3
 
 STORAGE="/storage/mussmann/dx_projects/dx2206"
 SCRATCH="/local_scratch/$SLURM_JOB_ID"
@@ -36,7 +36,7 @@ rsync $HIFI2DIR $SCRATCH/$PROGRAM/.
 cd $SCRATCH/$PROGRAM
 
 # run meryl
-meryl threads=$PROC union-sum output pluc.meryl [count k=$KMER $HIFI1 output hifi1.meryl] [count k=32 $HIFI2 output hifi2.meryl]
+meryl threads=$PROC union-sum output pluc.meryl [count k=$KMER $HIFI1 output hifi1.meryl] [count k=$KMER $HIFI2 output hifi2.meryl]
 
 # make histogram
 meryl histogram pluc.meryl > $HISTOGRAM
