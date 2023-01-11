@@ -20,7 +20,7 @@ PROGRAM="busco/3ddna/actinopterygii"
 
 FASTA="pluc_hic_genome.3ddna.fa"
 
-GENOME="$STORAGE/3ddna/finalize/$FASTA"
+GENOME="$STORAGE/current_draft/$FASTA"
 
 OUT="pluc_busco"
 
