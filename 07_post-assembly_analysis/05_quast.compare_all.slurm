@@ -23,7 +23,7 @@ CONTIG="pluc_hic_genome.fa"
 SCAFFOLD="pluc_hic_genome.3ddna.fa"
 
 CONTIGDIR="$STORAGE/current_draft/$CONTIG"
-SCAFFOLDDIR="$STORAGE/current_draft/$SCAFFOLD3"
+SCAFFOLDDIR="$STORAGE/current_draft/$SCAFFOLD"
 
 # hifi reads
 FILE1="m64047_220829_191921.ccs.fastq.gz"
