@@ -1,4 +1,4 @@
-#09: RNA Alignment
+# 09: RNA Alignment
 
 This directory contains two scripts beginning with '01_' because a de novo transcriptome assembly was performed (Trinity) and a reference-aligned assembly was also performed (hisat & stringtie).
 
