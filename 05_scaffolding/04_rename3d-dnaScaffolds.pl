@@ -3,6 +3,7 @@
 use warnings;
 use strict;
 use Getopt::Std;
+use Data::Dumper;
 
 # kill program and print help if no command line arguments were given
 if( scalar( @ARGV ) == 0 ){
@@ -26,29 +27,43 @@ my @lines; #holds content of input fasta file
 
 &filetoarray( $file, \@lines );
 
+my %hash;
+my $contig;
+foreach my $item( @lines ){
+	if( $item =~ /^>/ ){
+		$contig = $item;
+	}else{
+		$hash{$contig} .= $item;
+	}
+}
+
+my %lenhash;
+
+foreach my $item( sort keys %hash ){
+	$lenhash{$item} = length($hash{$item});
+}
+
 my $chromcount=0;
 my $scaffoldcount=0;
 
 open( OUT, '>', $out ) or die "Can't open $out: $!\n\n";
-foreach my $line( @lines ){
-	if( $line =~ /^>/ ){
-		#print $line, "\n";
-		my @header = split( /_/, $line );
-		if( $header[2] < $chrom+1 ){
-			$chromcount+=1;
-			print OUT ">Chromosome_", $chromcount, "\n";
-		}else{
-			$scaffoldcount+=1;
-			print OUT ">Unplaced_scaffold_", $scaffoldcount, "\n";
-		}
+
+foreach my $key(  sort { $lenhash{$b} <=> $lenhash{$a} } keys(%lenhash) ){
+	if( $chromcount < $chrom ){
+		$chromcount+=1;
+		print OUT ">Chromosome_", $chromcount, "\n";
 	}else{
-		print OUT $line, "\n";
+		$scaffoldcount+=1;
+		print OUT ">Unplaced_scaffold_", $scaffoldcount, "\n";
 	}
+	print OUT $hash{$key}, "\n";
 }
+
 close OUT;
 
-exit;
+#print Dumper( \@vals );
 
+exit;
 #####################################################################################################
 ############################################ Subroutines ############################################
 #####################################################################################################
