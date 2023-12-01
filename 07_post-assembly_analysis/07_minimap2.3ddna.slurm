@@ -21,7 +21,7 @@ SCRATCH="/scratch/$SLURM_JOB_ID"
 RAW="$STORAGE/raw/pacbio"
 PROGRAM="minimap2/3ddna"
 
-FASTA="pluc_hic_genome.3ddna.fa"
+FASTA="pluc_hic_genome.3ddna.clean.nocontamination.renamed.fa"
 GENOME="$STORAGE/current_draft/$FASTA"
 
 HIFI1="m64047_220829_191921.ccs.filt.fastq.gz"

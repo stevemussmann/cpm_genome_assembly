@@ -2,9 +2,9 @@
 #SBATCH --job-name=pluc_quast
 #SBATCH --partition condo
 #SBATCH --qos condo
-#SBATCH --constraint='douglas&256gb'
+#SBATCH --constraint='douglas&768gb'
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=16
+#SBATCH --ntasks-per-node=32
 #SBATCH --exclusive
 #SBATCH --time=240:00:00
 #SBATCH -e %j.err
@@ -20,22 +20,25 @@ PROGRAM="quast"
 
 # contigs and scaffolds
 CONTIG="pluc_hic_genome.fa"
-SCAFFOLD="pluc_hic_genome.3ddna.fa"
+SCAFFOLD="pluc_hic_genome.3ddna.clean.nocontamination.renamed.fa"
+#SCAFFOLD="pluc_hic_genome.3ddna.fa"
 
 CONTIGDIR="$STORAGE/current_draft/$CONTIG"
 SCAFFOLDDIR="$STORAGE/current_draft/$SCAFFOLD"
+#SCAFFOLDDIR="$STORAGE/3ddna/finalize/$SCAFFOLD"
+#SCAFFOLDDIR="$STORAGE/current_draft/$SCAFFOLD"
 
 # hifi reads
-FILE1="m64047_220829_191921.ccs.fastq.gz"
-FILE2="m64047_220831_061814.ccs.fastq.gz"
+FILE1="m64047_220829_191921.ccs.filt.fastq.gz"
+FILE2="m64047_220831_061814.ccs.filt.fastq.gz"
 
-FILE1DIR="$STORAGE/raw/pacbio/$FILE1"
-FILE2DIR="$STORAGE/raw/pacbio/$FILE2"
+FILE1DIR="$STORAGE/hifiadapterfilt/$FILE1"
+FILE2DIR="$STORAGE/hifiadapterfilt/$FILE2"
 
 # outdir
 OUT="pluc_quast_final"
 
-PROC=16
+PROC=32
 
 # copy data
 mkdir -p $SCRATCH/$PROGRAM

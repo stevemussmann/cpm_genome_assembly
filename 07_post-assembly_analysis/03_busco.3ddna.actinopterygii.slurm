@@ -12,13 +12,13 @@
 
 module purge
 source ~/miniconda3/etc/profile.d/conda.sh
-conda activate busco542
+conda activate busco550
 
 STORAGE="/storage/mussmann/dx_projects/dx2206"
 SCRATCH="/scratch/$SLURM_JOB_ID"
 PROGRAM="busco/3ddna/actinopterygii"
 
-FASTA="pluc_hic_genome.3ddna.fa"
+FASTA="pluc_hic_genome.3ddna.clean.nocontamination.renamed.fa"
 
 GENOME="$STORAGE/current_draft/$FASTA"
 

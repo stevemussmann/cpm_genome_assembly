@@ -12,10 +12,10 @@
 
 module purge
 source ~/miniconda3/etc/profile.d/conda.sh
-conda activate busco542
+conda activate busco550
 
 STORAGE="/storage/mussmann/dx_projects/dx2206"
-SCRATCH="/local_scratch/$SLURM_JOB_ID"
+SCRATCH="/scratch/$SLURM_JOB_ID"
 PROGRAM="busco/contigs/vertebrata"
 
 FASTA="pluc_hic_genome.fa"
