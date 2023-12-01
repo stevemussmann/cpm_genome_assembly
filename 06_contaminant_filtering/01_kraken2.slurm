@@ -12,16 +12,16 @@
 
 module purge
 source ~/miniconda3/etc/profile.d/conda.sh
-conda activate kraken212
+conda activate kraken213
 
 STORAGE="/storage/mussmann/dx_projects/dx2206"
-SCRATCH="/local_scratch/$SLURM_JOB_ID"
+SCRATCH="/scratch/$SLURM_JOB_ID"
 PROGRAM="kraken2"
 
-FASTA="pluc_hic_genome.3ddna.pre-kraken2.fa"
+FASTA="pluc_hic_genome.3ddna.clean.renamed.fa"
 
 # kraken2 PlusPFP refseq index downloaded from https://benlangmead.github.io/aws-indexes/k2 because the kraken2 download tool is perpetually broken.
-DB="/storage/mussmann/k2_pluspfp_20220607"
+DB="/storage/mussmann/k2_pluspfp_20231009"
 
 GENOME="$STORAGE/current_draft/$FASTA"
 
