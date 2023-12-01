@@ -18,7 +18,7 @@ PROC=32
 PA=$(($PROC/4))
 
 STORAGE="/storage/mussmann/dx_projects/dx2206"
-SCRATCH="/scratch/$SLURM_JOB_ID"
+SCRATCH="/local_scratch/$SLURM_JOB_ID"
 PROGRAM="repeatmodeler"
 
 FASTA="pluc_hic_genome.3ddna.clean.nocontamination.renamed.fa"
