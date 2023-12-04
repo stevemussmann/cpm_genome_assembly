@@ -22,9 +22,9 @@ PA=$(($PROC/4))
 
 STORAGE="/storage/mussmann/dx_projects/dx2206"
 SCRATCH="/local_scratch/$SLURM_JOB_ID"
-PROGRAM="repeatmasker"
+PROGRAM="repeatmasker/nolow"
 
-FASTA="pluc_hic_genome.3ddna.fa"
+FASTA="pluc_hic_genome.3ddna.clean.nocontamination.renamed.fa"
 RB="vrtrep.ref"
 RM="pluc-families.filtered.fa"
 
@@ -32,7 +32,6 @@ GENOME="$STORAGE/current_draft/$FASTA"
 REPBASE="/storage/mussmann/repbase/RepBase27.08.fasta/$RB"
 REPMOD="$STORAGE/blast_rm_swissprot/$RM"
 
-#mkdir -p $SCRATCH/$PROGRAM/libdir
 mkdir -p $SCRATCH/$PROGRAM
 
 rsync $GENOME $SCRATCH/$PROGRAM/.
@@ -41,11 +40,10 @@ rsync $REPMOD $SCRATCH/$PROGRAM/.
 
 cd $SCRATCH/$PROGRAM
 
-#cat $RB $RM > $SCRATCH/$PROGRAM/libdir/pluc-custom-lib.fa
 cat $RB $RM > $SCRATCH/$PROGRAM/pluc-custom-lib.fa
 
-#RepeatMasker -s -pa $PA -lib pluc-custom-lib.fa -xsmall -gff -libdir $SCRATCH/$PROGRAM/libdir -dir . $FASTA
-RepeatMasker -s -pa $PA -lib pluc-custom-lib.fa -xsmall -gff -dir . $FASTA
+# command used for braker
+RepeatMasker -s -pa $PA -lib pluc-custom-lib.fa -xsmall -gff -nolow -dir . $FASTA
 
 rm $SCRATCH/$PROGRAM/$FASTA
 rm $SCRATCH/$PROGRAM/$RB
