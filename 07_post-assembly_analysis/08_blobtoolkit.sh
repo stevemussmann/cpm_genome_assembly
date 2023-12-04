@@ -1,8 +1,5 @@
 #!/bin/bash
 
-## need to install docker container
-# docker pull genomehubs/blobtoolkit
-
 CWD=`pwd`
 DATASETS="$CWD/datasets"
 DATA="$CWD/data"
@@ -15,9 +12,15 @@ BAM="pluc_hic_genome.bam"
 D="hifiasm"
 
 ## 3DDNA DETAILS
-FASTA2="pluc_hic_genome.3ddna.fa"
-BAM2="pluc_hic_genome.3ddna.bam"
+#FASTA2="pluc_hic_genome.3ddna.fa"
+FASTA2="pluc_hic_genome.3ddna.clean.nocontamination.renamed.fa"
+#BAM2="pluc_hic_genome.3ddna.bam"
+BAM2="pluc_hic_genome.3ddna.clean.nocontamination.renamed.bam"
 D2="3d-dna"
+
+## 3DDNA DETAILS
+FASTA3="trinity_out_dir.Trinity.fasta"
+D3="trinity"
 
 ## DETAILS FOR ALL
 TAXID="232998" #Genbank taxid for Ptychocheilus lucius
@@ -26,13 +29,6 @@ IMG="btk"
 mkdir -p $DATASETS
 mkdir -p $DATA
 mkdir -p $OUTPUT
-mkdir -p $TAXDUMP
-
-## get taxdump
-#wget https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz -P $TAXDUMP	
-#cd $TAXDUMP
-#tar -zxvf new_taxdump.tar.gz
-#cd $CWD
 
 ## dummy file to make cumulative plots work
 HITS="blank.hits.out"
@@ -55,11 +51,11 @@ sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
 	datasets/$D
 
 # add busco data
-sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
-	-v $DATASETS:/blobtoolkit/datasets -v $DATA:/blobtoolkit/data -v $TAXDUMP:/blobtoolkit/taxdump \
-	genomehubs/blobtoolkit:latest \
-	blobtools add --busco data/busco/contigs/actinopterygii/pluc_busco/run_actinopterygii_odb10/full_table.tsv \
-	datasets/$D
+#sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
+#	-v $DATASETS:/blobtoolkit/datasets -v $DATA:/blobtoolkit/data -v $TAXDUMP:/blobtoolkit/taxdump \
+#	genomehubs/blobtoolkit:latest \
+#	blobtools add --busco data/busco/contigs/actinopterygii/pluc_busco/run_actinopterygii_odb10/full_table.tsv \
+#	datasets/$D
 
 # uncomment lines below to add vertebrata busco results instead of actinopterygii
 sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
@@ -87,11 +83,11 @@ sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
 	datasets/$D2
 
 # add busco data
-sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
-	-v $DATASETS:/blobtoolkit/datasets -v $DATA:/blobtoolkit/data -v $TAXDUMP:/blobtoolkit/taxdump \
-	genomehubs/blobtoolkit:latest \
-	blobtools add --busco data/busco/3ddna/actinopterygii/pluc_busco/run_actinopterygii_odb10/full_table.tsv \
-	datasets/$D2
+#sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
+#	-v $DATASETS:/blobtoolkit/datasets -v $DATA:/blobtoolkit/data -v $TAXDUMP:/blobtoolkit/taxdump \
+#	genomehubs/blobtoolkit:latest \
+#	blobtools add --busco data/busco/3ddna/actinopterygii/pluc_busco/run_actinopterygii_odb10/full_table.tsv \
+#	datasets/$D2
 
 # uncomment lines below to add vertebrata busco results instead of actinopterygii
 sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
@@ -106,6 +102,24 @@ sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
 	genomehubs/blobtoolkit:latest \
 	blobtools add --cov data/coverage/minimap2/3ddna/$BAM2 \
 	datasets/$D2
+
+## COMMANDS FOR TRINITY OUTPUT
+# create dataset
+sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
+	-v $DATASETS:/blobtoolkit/datasets -v $DATA:/blobtoolkit/data -v $TAXDUMP:/blobtoolkit/taxdump \
+	genomehubs/blobtoolkit:latest \
+	blobtools create \
+	--fasta data/$FASTA3 \
+	--taxid $TAXID \
+	--taxdump taxdump \
+	datasets/$D3
+
+# add busco data
+sudo docker run -it --rm --name $IMG -u $UID:$GROUPS \
+	-v $DATASETS:/blobtoolkit/datasets -v $DATA:/blobtoolkit/data -v $TAXDUMP:/blobtoolkit/taxdump \
+	genomehubs/blobtoolkit:latest \
+	blobtools add --busco data/busco/trinity/actinopterygii/pluc_busco/run_actinopterygii_odb10/full_table.tsv \
+	datasets/$D3
 
 ## START DOCKER VIEWER INSTANCE - only needs to be done once
 sudo docker run -d --rm --name $IMG -v $DATASETS:/blobtoolkit/datasets -v $TAXDUMP:/blobtoolkit/taxdump \
@@ -145,5 +159,22 @@ sudo docker exec -it $IMG \
 sudo docker exec -it $IMG \
 	blobtools view --host http://localhost:8080 --out output \
 	--view snail $D2
+
+## MAKE PLOTS FOR TRINITY OUTPUT
+# add dummy file so cumulative plot should work
+sudo docker exec -it $IMG \
+	blobtools add --hits output/$HITS \
+	--taxdump taxdump \
+	datasets/$D3
+
+# make cumulative plot
+sudo docker exec -it $IMG \
+	blobtools view --host http://localhost:8080 --out output \
+	--view cumulative $D3
+
+# make snail plot
+sudo docker exec -it $IMG \
+	blobtools view --host http://localhost:8080 --out output \
+	--view snail $D3
 
 exit
