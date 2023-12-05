@@ -67,11 +67,12 @@ ARRAY=($(ls -d *.bam))
 LINE=`for i in "${ARRAY[@]}"; do echo -ne "$SCRATCH/$PROGRAM/$i,"; done;`
 BAMLIST=`echo $LINE | sed 's/,$//g'`
 
-# run maker
+# run braker
 singularity exec --bind /local_scratch:/local_scratch $HOME/braker3.sif braker.pl \
 	--species=$SPECIES --genome=${SCRATCH}/${PROGRAM}/${FASTA} \
 	--bam=$BAMLIST --gff3 --threads $PROC --useexisting --prot_seq=$PROLIST
 
+# cleanup
 rm $SCRATCH/$PROGRAM/$FASTA
 rm $SCRATCH/$PROGRAM/*.bam
 rm $SCRATCH/$PROGRAM/${SPFASTA%.fasta}.faa
