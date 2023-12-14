@@ -17,7 +17,7 @@ if( $opts{h} ){
 }
 
 # parse the command line
-my( $file, $out, $ref, $qry, $org, $faa, $max ) = &parsecom( \%opts );
+my( $file, $out, $ref, $qry, $org, $faa, $mult ) = &parsecom( \%opts );
 
 my @lines; #holds content of input fasta file
 my @orgLines;
@@ -59,22 +59,16 @@ for( my $i=0; $i<@lines; $i++ ){
 	}
 }
 
-# descending sort on values in query hash
-my @keys = sort{ $qryHash{$b} <=> $qryHash{$a} } keys( %qryHash );
-
-my $counter = 0;
-foreach my $g( @keys ){
-	if( $counter < $max ){
-		if( $refHash{$g} > 0 ){
-			$counter++;
-			push( @orgs, $g );
-		}
-	}else{
-		last;
+# start working here to compare query and reference using multiplier
+foreach my $refG( sort keys %refHash ){
+	if( ($refHash{$refG} > 1) and ($qryHash{$refG} > ($mult*$refHash{$refG}) ) ){
+		print $refHash{$refG}, "\n";
+		push( @orgs, $refG );
 	}
 }
 
 foreach my $g( @orgs ){
+	print $orgHash{$g}{$ref}, "\n";
 	my @temp = split( /, /, $orgHash{$g}{$ref} );
 	foreach my $item( @temp ){
 		$keepHash{$item} = $g;
@@ -118,9 +112,9 @@ exit;
 # subroutine to print help
 
 sub help{
-	print "\nfindLargestOrthogroups.pl is a perl script developed by Steven Michael Mussmann\n\n";
+	print "\nfindExpandedOrthogroups.pl is a perl script developed by Steven Michael Mussmann\n\n";
 	print "To report bugs send an email to mussmann\@email.uark.edu\n";
-	print "When submitting bugs please include all input files, options used for the program, and all error messages that were printed to the screen.\n\n";
+	print "When submitting bugs please include all input files, options used for the program, and all error messages that were printed to the screen\n\n";
 	print "Program Options:\n";
 	print "\t\t[ -a | -f | -F | -h | -m | -o | -r | -q ]\n\n";
 	print "\t-a:\tProtein fasta from reference species (default = GCF_000002035.6_GRCz11_protein.faa).\n\n";
@@ -128,8 +122,8 @@ sub help{
 	print "\t-F:\tSpecify the other input file (default = Orthogroups.tsv).\n\n";
 	print "\t-h:\tDisplay this help message.\n";
 	print "\t\tThe program will die after the help message is displayed.\n\n";
-	print "\t-m:\tSpecify the max number of top ortholog groups to retain.\n\n";
-	print "\t-o:\tSpecify the output file name (Default = Orthogroups.largest.faa).\n\n";
+	print "\t-m:\tSpecify the multiplier relative to the reference for determining orthologs to retain (default = 5).\n\n";
+	print "\t-o:\tSpecify the output file name (Default = Orthogroups.expanded.faa).\n\n";
 	print "\t-r:\tSpecify the reference species (default = GCF_000002035.6_GRCz11_protein).\n\n";
 	print "\t-q:\tSpecify the query species (default = Ptychocheilus_lucius.proteins).\n\n";
 }
@@ -145,12 +139,12 @@ sub parsecom{
  	my $faa = $opts{a} || "GCF_000002035.6_GRCz11_protein.faa"; #protein fasta file for reference species
  	my $file = $opts{f} || "Orthogroups.GeneCount.tsv"; #Orthogroups.GeneCount.tsv from orthofinder
 	my $org = $opts{F} || "Orthogroups.tsv"; # specify Orthogroups.tsv file from orthofinder
-	my $out = $opts{o} || "Orthogroups.largest.faa"; #used to specify output file name
-	my $max = $opts{m} || 10; # max number of ortholog groups to retain
+	my $out = $opts{o} || "Orthogroups.expanded.faa"; #used to specify output file name
+	my $mult = $opts{m} || 5; # multiplier for determining which ortholog groups to retain
 	my $ref = $opts{r} || "GCF_000002035.6_GRCz11_protein"; #used to specify reference species
 	my $qry = $opts{q} || "Ptychocheilus_lucius.proteins"; #used to specify query species
 	
-	return( $file, $out, $ref, $qry, $org, $faa, $max );
+	return( $file, $out, $ref, $qry, $org, $faa, $mult );
 }
 
 #####################################################################################################
