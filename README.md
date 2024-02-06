@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/580083445.svg)](https://zenodo.org/doi/10.5281/zenodo.10626886)
+
 # Colorado Pikeminnow Genome Assembly
 Scripts used for assembly of the Colorado Pikeminnow (*Ptychocheilus lucius*) genome.
 
