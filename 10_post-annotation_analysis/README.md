@@ -9,3 +9,5 @@
 `findLargestOrthogroups.pl` is used on outputs of OrthoFinder to pull the ortholog sequences from the *Danio* proteome that correspond to the largest orthogroups (default = 10) in Colorado Pikeminnow. The resulting .faa file can be submitted to the STRING database.
 
 `findExpandedOrthogroups.pl` is used on outputs of OrthoFinder to pull the ortholog sequences from the *Danio* proteome that correspond to the orthogroups showing the greatest expansion in Colorado Pikeminnow relative to *Danio* (default multiplier = 5). The resulting .faa file can be submitted to the STRING database.
+
+After running all busco scripts, the plotting script packaged with BUSCO (generate_plot.py) was used to generate R code with the command `generate_plot.py -wd ./`. This created the `busco_figure.R` script, which was used to plot BUSCO scores for all tissue types used in annotation.
